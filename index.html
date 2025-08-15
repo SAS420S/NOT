@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Earn App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .user-profile img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        section {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0077bb;
+        }
+
+        .ad-container {
+            height: 150px;
+            background: #eee;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .referral-code {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .referral-code input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="user-profile">
+                <img id="user-avatar" src="" alt="Profile">
+                <div>
+                    <h2 id="user-name"></h2>
+                    <p id="user-balance">Balance: $0.00</p>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="earn-section">
+                <h3>Watch Ads & Earn</h3>
+                <div class="ad-container" id="ad-container"></div>
+                <button id="watch-ad-btn">Watch Ad ($0.10)</button>
+            </section>
+
+            <section class="referral-section">
+                <h3>Refer & Earn 10%</h3>
+                <div class="referral-code">
+                    <input type="text" id="ref-code" readonly>
+                    <button id="copy-ref-btn">Copy</button>
+                </div>
+                <p>Your referrals: <span id="ref-count">0</span></p>
+            </section>
+
+            <section class="withdraw-section">
+                <h3>Withdraw Earnings</h3>
+                <select id="withdraw-method">
+                    <option value="usdt">USDT (TRC20)</option>
+                    <option value="ton">TON</option>
+                </select>
+                <input type="number" id="withdraw-amount" placeholder="Min $5">
+                <button id="withdraw-btn">Withdraw</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // টেলিগ্রাম ওয়েব অ্যাপ ইনিশিয়ালাইজ
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+
+        // ইউজার ডাটা লোড
+        const user = Telegram.WebApp.initDataUnsafe.user || {
+            id: 123456,
+            first_name: "Guest",
+            last_name: "",
+            username: "guest",
+            photo_url: ""
+        };
+
+        // DOM এলিমেন্টস
+        const userAvatar = document.getElementById('user-avatar');
+        const userName = document.getElementById('user-name');
+        const userBalance = document.getElementById('user-balance');
+        const watchAdBtn = document.getElementById('watch-ad-btn');
+        const adContainer = document.getElementById('ad-container');
+        const refCode = document.getElementById('ref-code');
+        const copyRefBtn = document.getElementById('copy-ref-btn');
+        const refCount = document.getElementById('ref-count');
+        const withdrawBtn = document.getElementById('withdraw-btn');
+
+        // ইউজার ইনফো আপডেট
+        function updateUserInfo() {
+            userName.textContent = `${user.first_name} ${user.last_name}`;
+            if(user.photo_url) {
+                userAvatar.src = user.photo_url;
+            }
+            
+            // রেফারেল কোড জেনারেট (ইউজার আইডি ব্যবহার করে)
+            refCode.value = `REF${user.id}`;
+        }
+
+        // ব্যালেন্স ম্যানেজমেন্ট
+        let balance = 0;
+        function updateBalance(amount) {
+            balance += amount;
+            userBalance.textContent = `Balance: $${balance.toFixed(2)}`;
+            localStorage.setItem('userBalance', balance);
+        }
+
+        // Ads লোড করার ফাংশন
+        function loadAd() {
+            // Monetag বা Gigahub ads লোড করার লজিক
+            adContainer.innerHTML = '<p>Loading ad...</p>';
+            
+            // ডেমো হিসেবে র‍্যান্ডম ad দেখানো
+            const ads = [
+                '<div class="ad-content"><h4>Special Offer!</h4><p>Get 50% discount</p></div>',
+                '<div class="ad-content"><h4>New Game</h4><p>Install and earn $1</p></div>'
+            ];
+            
+            setTimeout(() => {
+                adContainer.innerHTML = ads[Math.floor(Math.random() * ads.length)];
+            }, 1000);
+        }
+
+        // ইভেন্ট লিসেনারস
+        watchAdBtn.addEventListener('click', () => {
+            loadAd();
+            setTimeout(() => {
+                updateBalance(0.10);
+                Telegram.WebApp.showAlert('You earned $0.10!');
+            }, 3000);
+        });
+
+        copyRefBtn.addEventListener('click', () => {
+            refCode.select();
+            document.execCommand('copy');
+            Telegram.WebApp.showAlert('Referral code copied!');
+        });
+
+        withdrawBtn.addEventListener('click', () => {
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            const method = document.getElementById('withdraw-method').value;
+            
+            if(amount < 5) {
+                Telegram.WebApp.showAlert('Minimum withdrawal is $5');
+                return;
+            }
+            
+            if(amount > balance) {
+                Telegram.WebApp.showAlert('Insufficient balance');
+                return;
+            }
+            
+            // Withdrawal request
+            Telegram.WebApp.sendData(JSON.stringify({
+                action: 'withdraw',
+                amount: amount,
+                method: method
+            }));
+            
+            Telegram.WebApp.showAlert(`Withdrawal request of $${amount} sent!`);
+        });
+
+        // রেফারেল সিস্টেম
+        function checkReferral() {
+            const initData = Telegram.WebApp.initData;
+            if(initData.start_param) {
+                // রেফারেল কোড প্রসেসিং
+                const refCode = initData.start_param;
+                // এখানে রেফারেল ভেরিফিকেশন লজিক যোগ করুন
+                Telegram.WebApp.showAlert(`You were referred by ${refCode}`);
+            }
+        }
+
+        // ইনিশিয়ালাইজেশন
+        updateUserInfo();
+        checkReferral();
+
+        // ব্যালেন্স লোড (যদি localStorage এ থাকে)
+        const savedBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+        updateBalance(savedBalance);
+
+        /* Monetag/Gigahub ইন্টিগ্রেশন আনকমেন্ট করুন যখন প্রয়োজন
+        function initMonetag() {
+            const script = document.createElement('script');
+            script.src = 'https://sdk.monetag.com/?uid=YOUR_UID';
+            document.head.appendChild(script);
+        }
+        initMonetag();
+
+        // অথবা Gigahub
+        function initGigahub() {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.gigahub.com/sdk.js';
+            script.onload = function() {
+                GigaHub.init({
+                    publisherId: 'YOUR_PUBLISHER_ID',
+                    adContainer: 'ad-container'
+                });
+            };
+            document.head.appendChild(script);
+        }
+        initGigahub();
+        */
+    </script>
+</body>
+</html>
