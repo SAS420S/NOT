@@ -3,89 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Earn App</title>
+    <title>Ads Earn</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="user-profile">
-                <img id="user-avatar" class="user-avatar" src="assets/images/default-avatar.png" alt="Profile">
-                <div class="user-info">
-                    <h1 class="user-name" id="user-name"></h1>
-                    <div class="user-meta">
-                        <span class="user-username" id="user-username"></span>
-                        <span class="user-id" id="user-id"></span>
-                    </div>
-                    <div class="balance-container">
-                        <span class="balance-icon">💰</span>
-                        <span class="user-balance" id="user-balance">$0.00</span>
-                    </div>
+        <!-- সিম্পল হেডার -->
+        <header class="simple-header">
+            <div class="profile-balance">
+                <img src="assets/images/default-avatar.png" alt="Profile" class="profile-pic">
+                <div>
+                    <h2 class="user-name">User Name</h2>
+                    <div class="balance">USDT <span class="balance-amount">1.10</span></div>
                 </div>
             </div>
         </header>
 
-        <main>
-            <section class="earn-section">
-                <h3>Watch Ads & Earn</h3>
-                <div class="ad-container" id="ad-container">
-                    <div class="ad-content">
-                        <h4>Ready to Earn?</h4>
-                        <p>Click the button below to watch an ad</p>
+        <!-- ব্যালেন্স কার্ড -->
+        <section class="balance-card">
+            <div class="balance-stats">
+                <div>
+                    <span class="stat-value">193</span>
+                    <span class="stat-label">Total Ads</span>
+                </div>
+                <div>
+                    <span class="stat-value">23</span>
+                    <span class="stat-label">Today's Ads</span>
+                </div>
+                <div>
+                    <span class="stat-value">1000</span>
+                    <span class="stat-label">Target</span>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 23%;"></div>
+            </div>
+        </section>
+
+        <!-- মেইন কন্টেন্ট -->
+        <main class="main-content" id="main-content">
+            <!-- হোম ভিউ (ডিফল্ট) -->
+            <div class="view" id="home-view">
+                <h3>Watch Ad (+0.01 USDT)</h3>
+                <div class="ad-container">
+                    <div class="ad-placeholder">
+                        <p>Ad will appear here</p>
                     </div>
                 </div>
-                <div class="progress-container" id="progress-container" style="display: none;">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
-                <button id="watch-ad-btn">
-                    <span class="btn-icon">👁️</span> Watch Ad ($0.10)
-                </button>
-            </section>
+                <button class="watch-ad-btn pulse">Watch Ad</button>
+                <p class="withdraw-info">Reach 10.00 USDT to Withdraw</p>
+            </div>
 
-            <section class="referral-section">
-                <h3>Refer & Earn 10%</h3>
-                <div class="referral-code">
-                    <input type="text" id="ref-code" readonly>
-                    <button id="copy-ref-btn">
-                        <span class="btn-icon">📋</span> Copy
-                    </button>
+            <!-- উইথড্রয় ভিউ -->
+            <div class="view" id="withdraw-view" style="display: none;">
+                <h3>Withdraw USDT</h3>
+                <div class="withdraw-form">
+                    <p>Minimum withdrawal: 10.00 USDT</p>
+                    <input type="number" placeholder="Amount" class="withdraw-amount">
+                    <select class="withdraw-method">
+                        <option value="usdt">USDT (TRC20)</option>
+                        <option value="ton">TON</option>
+                    </select>
+                    <button class="withdraw-btn">Withdraw</button>
+                </div>
+            </div>
+
+            <!-- রেফারেল ভিউ -->
+            <div class="view" id="referrals-view" style="display: none;">
+                <h3>Refer & Earn</h3>
+                <div class="referral-code-container">
+                    <input type="text" value="REF12345" readonly class="referral-code">
+                    <button class="copy-btn">Copy</button>
                 </div>
                 <div class="referral-stats">
                     <div class="stat-box">
-                        <div class="stat-value" id="ref-count">0</div>
-                        <div class="stat-label">Referrals</div>
+                        <span class="stat-value">5</span>
+                        <span class="stat-label">Referrals</span>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-value" id="ref-earnings">$0.00</div>
-                        <div class="stat-label">Earned</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value" id="ref-level">1</div>
-                        <div class="stat-label">Level</div>
+                        <span class="stat-value">0.50</span>
+                        <span class="stat-label">USDT Earned</span>
                     </div>
                 </div>
-            </section>
+                <p class="referral-note">Earn 10% of your referrals' earnings</p>
+            </div>
 
-            <section class="withdraw-section">
-                <h3>Withdraw Earnings</h3>
-                <select id="withdraw-method">
-                    <option value="usdt">USDT (TRC20)</option>
-                    <option value="ton">TON</option>
-                    <option value="btc">Bitcoin</option>
-                    <option value="eth">Ethereum</option>
-                </select>
-                <input type="number" id="withdraw-amount" placeholder="Min $5">
-                <button id="withdraw-btn">
-                    <span class="btn-icon">💳</span> Withdraw
-                </button>
-            </section>
+            <!-- প্রোফাইল ভিউ -->
+            <div class="view" id="profile-view" style="display: none;">
+                <div class="profile-info">
+                    <img src="assets/images/default-avatar.png" alt="Profile" class="profile-pic-large">
+                    <h3>User Name</h3>
+                    <p>@username</p>
+                    <p>ID: 123456</p>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Joined</span>
+                        <span class="stat-value">14 Aug 2024</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Language</span>
+                        <span class="stat-value">English</span>
+                    </div>
+                </div>
+            </div>
         </main>
-    </div>
 
-    <div class="notification" id="notification">
-        <span id="notification-icon">✅</span>
-        <span id="notification-message">Operation successful!</span>
+        <!-- বটম নেভিগেশন -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-view="home-view">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </button>
+            <button class="nav-btn" data-view="withdraw-view">
+                <span class="nav-icon">💳</span>
+                <span class="nav-text">Withdraw</span>
+            </button>
+            <button class="nav-btn" data-view="referrals-view">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">Referrals</span>
+            </button>
+            <button class="nav-btn" data-view="profile-view">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Profile</span>
+            </button>
+        </nav>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
