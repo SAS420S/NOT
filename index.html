@@ -1,159 +1,576 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earn USDT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>Earn NotCoin</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --primary: #FFD700;
+            --secondary: #6C4AB6;
+            --dark: #1A1A2E;
+            --light: #F5F5F5;
+            --card: #FFFFFF;
+            --text: #333333;
+            --border: #E0E0E0;
+            --radius: 12px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --card: #1F1B36;
+                --light: #16213E;
+                --text: #F5F5F5;
+                --border: #2D3748;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--light);
+            color: var(--text);
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+
+        /* হেডার স্টাইল */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .balance {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1rem;
+        }
+
+        .balance-amount {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        /* কার্ড স্টাইল */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        /* প্রোগ্রেস বার */
+        .progress-container {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* এড কন্টেইনার */
+        .ad-container {
+            height: 200px;
+            background: linear-gradient(135deg, var(--light) 0%, var(--border) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            border: 2px dashed var(--border);
+        }
+
+        /* বাটন স্টাইল */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius);
+            background: var(--primary);
+            color: #000;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn:disabled {
+            background: #CCCCCC;
+            cursor: not-allowed;
+        }
+
+        /* ইনপুট স্টাইল */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+            color: var(--text);
+        }
+
+        /* রেফারেল কোড */
+        .referral-code {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .referral-code input {
+            flex: 1;
+            padding: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        /* নেভিগেশন বার */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 3px;
+        }
+
+        /* পেজ ম্যানেজমেন্ট */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* অ্যানিমেশন */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- হেডার সেকশন -->
-        <header class="app-header">
-            <div class="profile-section">
-                <img id="user-avatar" src="assets/images/default-avatar.png" alt="Profile" class="avatar">
-                <div class="user-info">
-                    <h2 id="user-name">Loading...</h2>
-                    <div class="balance">
-                        <span>USDT</span>
-                        <strong id="user-balance">0.00</strong>
-                    </div>
-                </div>
+    <!-- হেডার -->
+    <div class="header">
+        <img id="user-avatar" class="profile-pic" src="https://i.pravatar.cc/150?img=3">
+        <div class="user-info">
+            <div class="user-name" id="user-name">Loading...</div>
+            <div class="balance">
+                <span>NotCoin:</span>
+                <span class="balance-amount" id="balance">0</span>
             </div>
-        </header>
+        </div>
+    </div>
 
-        <!-- মেইন কন্টেন্ট এরিয়া -->
-        <main class="app-main" id="app-main">
-            <!-- হোম পেজ -->
-            <div class="page active" id="home-page">
-                <div class="stats-card">
-                    <div class="stat-item">
-                        <span class="stat-value" id="total-ads">0</span>
-                        <span class="stat-label">Total Ads</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="today-ads">0</span>
-                        <span class="stat-label">Today</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="target-ads">1000</span>
-                        <span class="stat-label">Target</span>
-                    </div>
-                </div>
-
-                <div class="progress-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
-
+    <!-- মেইন কন্টেন্ট -->
+    <div id="app-content">
+        <!-- হোম পেজ -->
+        <div class="page active" id="home-page">
+            <div class="card">
                 <div class="ad-container" id="ad-container">
-                    <p>Ready to watch ads and earn USDT</p>
+                    <p>Watch ads to earn NotCoin</p>
                 </div>
-
-                <button class="primary-btn pulse" id="watch-ad-btn">
-                    👁️ Watch Ad (+0.01 USDT)
-                </button>
-
-                <p class="info-text">Reach 10.00 USDT to withdraw</p>
+                <button class="btn pulse" id="watch-ad-btn">👁️ Watch Ad (+1 NotCoin)</button>
+                <p style="text-align: center;">Reach 100 NotCoin to withdraw</p>
             </div>
+        </div>
 
-            <!-- উইথড্রয় পেজ -->
-            <div class="page" id="withdraw-page">
-                <h3 class="page-title">Withdraw USDT</h3>
-                
-                <div class="withdraw-card">
-                    <p class="info-text">Minimum withdrawal: 10.00 USDT</p>
-                    
-                    <div class="input-group">
-                        <label>Amount</label>
-                        <input type="number" id="withdraw-amount" placeholder="Enter amount">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Payment Method</label>
-                        <select id="withdraw-method">
-                            <option value="usdt_trc20">USDT (TRC20)</option>
-                            <option value="ton">TON</option>
-                            <option value="btc">Bitcoin</option>
-                        </select>
-                    </div>
-
-                    <button class="primary-btn" id="submit-withdraw">Withdraw</button>
+        <!-- উইথড্রয় পেজ -->
+        <div class="page" id="withdraw-page">
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Withdraw NotCoin</h3>
+                <div class="input-group">
+                    <label>Amount (Min: 100 NotCoin)</label>
+                    <input type="number" id="withdraw-amount" placeholder="Enter amount">
                 </div>
+                <div class="input-group">
+                    <label>Payment Method</label>
+                    <select id="withdraw-method">
+                        <option value="usdt">USDT (TRC20)</option>
+                        <option value="ton">TON</option>
+                    </select>
+                </div>
+                <button class="btn" id="withdraw-btn">💳 Withdraw</button>
             </div>
+        </div>
 
-            <!-- রেফারেল পেজ -->
-            <div class="page" id="referral-page">
-                <h3 class="page-title">Refer & Earn</h3>
-                
-                <div class="referral-card">
-                    <p>Earn 10% of your referrals' earnings</p>
-                    
-                    <div class="input-group">
-                        <label>Your Referral Code</label>
-                        <div class="copy-input">
-                            <input type="text" id="referral-code" readonly>
-                            <button id="copy-code">Copy</button>
-                        </div>
-                    </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <span class="stat-value" id="ref-count">0</span>
-                            <span class="stat-label">Referrals</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-value" id="ref-earnings">0.00</span>
-                            <span class="stat-label">USDT Earned</span>
-                        </div>
-                    </div>
+        <!-- রেফারেল পেজ -->
+        <div class="page" id="referral-page">
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Refer & Earn 10%</h3>
+                <div class="referral-code">
+                    <input type="text" id="ref-code" value="Loading..." readonly>
+                    <button class="btn" id="copy-btn">📋 Copy</button>
+                </div>
+                <div style="margin: 15px 0;">
+                    <p>Your referrals: <strong id="ref-count">0</strong></p>
+                    <p>Earned from referrals: <strong id="ref-earnings">0</strong> NotCoin</p>
                 </div>
             </div>
+        </div>
 
-            <!-- প্রোফাইল পেজ -->
-            <div class="page" id="profile-page">
-                <div class="profile-card">
-                    <img id="profile-avatar" src="assets/images/default-avatar.png" alt="Profile" class="profile-avatar">
+        <!-- প্রোফাইল পেজ -->
+        <div class="page" id="profile-page">
+            <div class="card">
+                <div style="text-align: center;">
+                    <img id="profile-avatar" class="profile-pic" src="https://i.pravatar.cc/150?img=3" style="width: 80px; height: 80px; margin-bottom: 10px;">
                     <h3 id="profile-name">User Name</h3>
-                    <p class="user-meta" id="profile-username">@username</p>
-                    <p class="user-meta" id="profile-id">ID: 123456</p>
+                    <p id="profile-username" style="color: var(--primary); margin: 5px 0;">@username</p>
+                    <p>ID: <span id="profile-id">123456</span></p>
                 </div>
-
-                <div class="profile-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">Joined Date</span>
-                        <span class="stat-value" id="join-date">2024-08-14</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Language</span>
-                        <span class="stat-value" id="user-language">English</span>
-                    </div>
+                <div style="margin-top: 20px;">
+                    <p>Total Earned: <strong id="total-earned">0</strong> NotCoin</p>
+                    <p>Ads Watched: <strong id="ads-watched">0</strong></p>
+                    <p>Joined: <strong id="join-date">2024-01-01</strong></p>
                 </div>
             </div>
-        </main>
+        </div>
+    </div>
 
-        <!-- বটম নেভিগেশন -->
-        <nav class="bottom-nav">
-            <button class="nav-btn active" data-page="home-page">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-text">Home</span>
-            </button>
-            <button class="nav-btn" data-page="withdraw-page">
-                <span class="nav-icon">💳</span>
-                <span class="nav-text">Withdraw</span>
-            </button>
-            <button class="nav-btn" data-page="referral-page">
-                <span class="nav-icon">👥</span>
-                <span class="nav-text">Referrals</span>
-            </button>
-            <button class="nav-btn" data-page="profile-page">
-                <span class="nav-icon">👤</span>
-                <span class="nav-text">Profile</span>
-            </button>
-        </nav>
+    <!-- বটম নেভিগেশন -->
+    <div class="nav-bar">
+        <button class="nav-btn active" data-page="home-page">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-btn" data-page="withdraw-page">
+            <span class="nav-icon">💳</span>
+            <span>Withdraw</span>
+        </button>
+        <button class="nav-btn" data-page="referral-page">
+            <span class="nav-icon">👥</span>
+            <span>Referral</span>
+        </button>
+        <button class="nav-btn" data-page="profile-page">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </button>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="app.js"></script>
+    <script>
+        // অ্যাপ স্টেট
+        const state = {
+            currentPage: 'home-page',
+            user: {
+                id: null,
+                firstName: 'User',
+                lastName: '',
+                username: null,
+                photoUrl: 'https://i.pravatar.cc/150?img=3',
+                language: 'en'
+            },
+            balance: 0,
+            totalEarned: 0,
+            adsWatched: 0,
+            referrals: 0,
+            refEarnings: 0,
+            joinDate: new Date().toISOString().split('T')[0],
+            isWatchingAd: false
+        };
+
+        // টেলিগ্রাম ওয়েব অ্যাপ ইনিশিয়ালাইজ
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+
+        // DOM এলিমেন্টস
+        const elements = {
+            userAvatar: document.getElementById('user-avatar'),
+            userName: document.getElementById('user-name'),
+            balanceDisplay: document.getElementById('balance'),
+            adContainer: document.getElementById('ad-container'),
+            watchAdBtn: document.getElementById('watch-ad-btn'),
+            withdrawAmount: document.getElementById('withdraw-amount'),
+            withdrawBtn: document.getElementById('withdraw-btn'),
+            refCode: document.getElementById('ref-code'),
+            copyBtn: document.getElementById('copy-btn'),
+            refCount: document.getElementById('ref-count'),
+            refEarnings: document.getElementById('ref-earnings'),
+            profileAvatar: document.getElementById('profile-avatar'),
+            profileName: document.getElementById('profile-name'),
+            profileUsername: document.getElementById('profile-username'),
+            profileId: document.getElementById('profile-id'),
+            totalEarned: document.getElementById('total-earned'),
+            adsWatched: document.getElementById('ads-watched'),
+            joinDate: document.getElementById('join-date'),
+            navBtns: document.querySelectorAll('.nav-btn'),
+            pages: document.querySelectorAll('.page')
+        };
+
+        // অ্যাপ ইনিশিয়ালাইজেশন
+        function initApp() {
+            // টেলিগ্রাম ইউজার ডাটা লোড
+            loadTelegramUser();
+            
+            // লোকাল স্টোরেজ থেকে ডাটা লোড
+            loadLocalData();
+            
+            // UI আপডেট
+            updateUI();
+            
+            // ইভেন্ট লিসেনার সেটআপ
+            setupEventListeners();
+        }
+
+        // টেলিগ্রাম ইউজার ডাটা লোড
+        function loadTelegramUser() {
+            const tgUser = Telegram.WebApp.initDataUnsafe.user;
+            
+            if (tgUser) {
+                state.user.id = tgUser.id;
+                state.user.firstName = tgUser.first_name || 'User';
+                state.user.lastName = tgUser.last_name || '';
+                state.user.username = tgUser.username ? `@${tgUser.username}` : null;
+                state.user.photoUrl = tgUser.photo_url || state.user.photoUrl;
+                state.user.language = tgUser.language_code || 'en';
+            } else {
+                // ডেমো ডাটা
+                state.user.id = Math.floor(Math.random() * 1000000);
+                state.user.username = 'demo_user';
+            }
+        }
+
+        // লোকাল স্টোরেজ থেকে ডাটা লোড
+        function loadLocalData() {
+            const savedData = localStorage.getItem('earnNotCoinData');
+            if (savedData) {
+                Object.assign(state, JSON.parse(savedData));
+            }
+        }
+
+        // ডাটা সেভ
+        function saveData() {
+            localStorage.setItem('earnNotCoinData', JSON.stringify(state));
+        }
+
+        // UI আপডেট
+        function updateUI() {
+            // ইউজার ইনফো
+            elements.userAvatar.src = state.user.photoUrl;
+            elements.userName.textContent = state.user.firstName;
+            elements.balanceDisplay.textContent = state.balance;
+            
+            // রেফারেল পেজ
+            elements.refCode.value = `https://t.me/your_bot?start=ref${state.user.id}`;
+            elements.refCount.textContent = state.referrals;
+            elements.refEarnings.textContent = state.refEarnings;
+            
+            // প্রোফাইল পেজ
+            elements.profileAvatar.src = state.user.photoUrl;
+            elements.profileName.textContent = state.user.firstName + (state.user.lastName ? ` ${state.user.lastName}` : '');
+            elements.profileUsername.textContent = state.user.username || 'No username';
+            elements.profileId.textContent = state.user.id;
+            elements.totalEarned.textContent = state.totalEarned;
+            elements.adsWatched.textContent = state.adsWatched;
+            elements.joinDate.textContent = state.joinDate;
+            
+            // পেজ ভিজিবিলিটি
+            elements.pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(state.currentPage).classList.add('active');
+            
+            // নেভিগেশন বাটন স্টাইল
+            elements.navBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.page === state.currentPage);
+            });
+            
+            // সেভ ডাটা
+            saveData();
+        }
+
+        // Ad দেখার ফাংশন
+        function watchAd() {
+            if (state.isWatchingAd) return;
+            
+            state.isWatchingAd = true;
+            elements.watchAdBtn.disabled = true;
+            elements.watchAdBtn.classList.remove('pulse');
+            elements.watchAdBtn.textContent = 'Ad is playing...';
+            
+            // ডেমো Ad টাইমার (বাস্তবে এখানে Monetag/GigaHub SDK ব্যবহার করবেন)
+            setTimeout(() => {
+                // NotCoin আর্ন
+                state.balance += 1;
+                state.totalEarned += 1;
+                state.adsWatched += 1;
+                
+                // UI আপডেট
+                updateUI();
+                
+                // বাটন রিসেট
+                state.isWatchingAd = false;
+                elements.watchAdBtn.disabled = false;
+                elements.watchAdBtn.classList.add('pulse');
+                elements.watchAdBtn.textContent = '👁️ Watch Ad (+1 NotCoin)';
+                
+                // নোটিফিকেশন
+                Telegram.WebApp.showAlert('You earned 1 NotCoin!');
+            }, 3000);
+        }
+
+        // উইথড্রয় সাবমিট
+        function submitWithdrawal() {
+            const amount = parseInt(elements.withdrawAmount.value);
+            
+            if (isNaN(amount)) {
+                Telegram.WebApp.showAlert('Please enter a valid amount');
+                return;
+            }
+            
+            if (amount < 100) {
+                Telegram.WebApp.showAlert('Minimum withdrawal is 100 NotCoin');
+                return;
+            }
+            
+            if (amount > state.balance) {
+                Telegram.WebApp.showAlert('Insufficient balance');
+                return;
+            }
+            
+            const method = document.getElementById('withdraw-method').value;
+            
+            // উইথড্রয় রিকোয়েস্ট
+            Telegram.WebApp.sendData(JSON.stringify({
+                action: 'withdraw',
+                amount: amount,
+                method: method,
+                userId: state.user.id
+            }));
+            
+            // ডেমো হিসেবে ব্যালেন্স আপডেট
+            state.balance -= amount;
+            updateUI();
+            
+            Telegram.WebApp.showAlert(`Withdrawal request of ${amount} NotCoin has been submitted!`);
+        }
+
+        // রেফারেল কোড কপি
+        function copyReferralCode() {
+            elements.refCode.select();
+            document.execCommand('copy');
+            Telegram.WebApp.showAlert('Referral link copied to clipboard!');
+        }
+
+        // ইভেন্ট লিসেনার সেটআপ
+        function setupEventListeners() {
+            // নেভিগেশন বাটন
+            elements.navBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.currentPage = btn.dataset.page;
+                    updateUI();
+                });
+            });
+            
+            // Ad বাটন
+            elements.watchAdBtn.addEventListener('click', watchAd);
+            
+            // উইথড্রয় বাটন
+            elements.withdrawBtn.addEventListener('click', submitWithdrawal);
+            
+            // কপি বাটন
+            elements.copyBtn.addEventListener('click', copyReferralCode);
+            
+            // টেলিগ্রাম ইভেন্ট
+            Telegram.WebApp.onEvent('themeChanged', updateUI);
+        }
+
+        // অ্যাপ শুরু
+        initApp();
+    </script>
 </body>
-</html>
+    </html>
