@@ -3,108 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ads Earn</title>
+    <title>Earn USDT</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- সিম্পল হেডার -->
-        <header class="simple-header">
-            <div class="profile-balance">
-                <img src="assets/images/default-avatar.png" alt="Profile" class="profile-pic">
-                <div>
-                    <h2 class="user-name">User Name</h2>
-                    <div class="balance">USDT <span class="balance-amount">1.10</span></div>
+    <div class="app-container">
+        <!-- হেডার সেকশন -->
+        <header class="app-header">
+            <div class="profile-section">
+                <img id="user-avatar" src="assets/images/default-avatar.png" alt="Profile" class="avatar">
+                <div class="user-info">
+                    <h2 id="user-name">Loading...</h2>
+                    <div class="balance">
+                        <span>USDT</span>
+                        <strong id="user-balance">0.00</strong>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <!-- ব্যালেন্স কার্ড -->
-        <section class="balance-card">
-            <div class="balance-stats">
-                <div>
-                    <span class="stat-value">193</span>
-                    <span class="stat-label">Total Ads</span>
-                </div>
-                <div>
-                    <span class="stat-value">23</span>
-                    <span class="stat-label">Today's Ads</span>
-                </div>
-                <div>
-                    <span class="stat-value">1000</span>
-                    <span class="stat-label">Target</span>
-                </div>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar" style="width: 23%;"></div>
-            </div>
-        </section>
-
-        <!-- মেইন কন্টেন্ট -->
-        <main class="main-content" id="main-content">
-            <!-- হোম ভিউ (ডিফল্ট) -->
-            <div class="view" id="home-view">
-                <h3>Watch Ad (+0.01 USDT)</h3>
-                <div class="ad-container">
-                    <div class="ad-placeholder">
-                        <p>Ad will appear here</p>
+        <!-- মেইন কন্টেন্ট এরিয়া -->
+        <main class="app-main" id="app-main">
+            <!-- হোম পেজ -->
+            <div class="page active" id="home-page">
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-ads">0</span>
+                        <span class="stat-label">Total Ads</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="today-ads">0</span>
+                        <span class="stat-label">Today</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="target-ads">1000</span>
+                        <span class="stat-label">Target</span>
                     </div>
                 </div>
-                <button class="watch-ad-btn pulse">Watch Ad</button>
-                <p class="withdraw-info">Reach 10.00 USDT to Withdraw</p>
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+
+                <div class="ad-container" id="ad-container">
+                    <p>Ready to watch ads and earn USDT</p>
+                </div>
+
+                <button class="primary-btn pulse" id="watch-ad-btn">
+                    👁️ Watch Ad (+0.01 USDT)
+                </button>
+
+                <p class="info-text">Reach 10.00 USDT to withdraw</p>
             </div>
 
-            <!-- উইথড্রয় ভিউ -->
-            <div class="view" id="withdraw-view" style="display: none;">
-                <h3>Withdraw USDT</h3>
-                <div class="withdraw-form">
-                    <p>Minimum withdrawal: 10.00 USDT</p>
-                    <input type="number" placeholder="Amount" class="withdraw-amount">
-                    <select class="withdraw-method">
-                        <option value="usdt">USDT (TRC20)</option>
-                        <option value="ton">TON</option>
-                    </select>
-                    <button class="withdraw-btn">Withdraw</button>
-                </div>
-            </div>
-
-            <!-- রেফারেল ভিউ -->
-            <div class="view" id="referrals-view" style="display: none;">
-                <h3>Refer & Earn</h3>
-                <div class="referral-code-container">
-                    <input type="text" value="REF12345" readonly class="referral-code">
-                    <button class="copy-btn">Copy</button>
-                </div>
-                <div class="referral-stats">
-                    <div class="stat-box">
-                        <span class="stat-value">5</span>
-                        <span class="stat-label">Referrals</span>
+            <!-- উইথড্রয় পেজ -->
+            <div class="page" id="withdraw-page">
+                <h3 class="page-title">Withdraw USDT</h3>
+                
+                <div class="withdraw-card">
+                    <p class="info-text">Minimum withdrawal: 10.00 USDT</p>
+                    
+                    <div class="input-group">
+                        <label>Amount</label>
+                        <input type="number" id="withdraw-amount" placeholder="Enter amount">
                     </div>
-                    <div class="stat-box">
-                        <span class="stat-value">0.50</span>
-                        <span class="stat-label">USDT Earned</span>
+
+                    <div class="input-group">
+                        <label>Payment Method</label>
+                        <select id="withdraw-method">
+                            <option value="usdt_trc20">USDT (TRC20)</option>
+                            <option value="ton">TON</option>
+                            <option value="btc">Bitcoin</option>
+                        </select>
                     </div>
+
+                    <button class="primary-btn" id="submit-withdraw">Withdraw</button>
                 </div>
-                <p class="referral-note">Earn 10% of your referrals' earnings</p>
             </div>
 
-            <!-- প্রোফাইল ভিউ -->
-            <div class="view" id="profile-view" style="display: none;">
-                <div class="profile-info">
-                    <img src="assets/images/default-avatar.png" alt="Profile" class="profile-pic-large">
-                    <h3>User Name</h3>
-                    <p>@username</p>
-                    <p>ID: 123456</p>
+            <!-- রেফারেল পেজ -->
+            <div class="page" id="referral-page">
+                <h3 class="page-title">Refer & Earn</h3>
+                
+                <div class="referral-card">
+                    <p>Earn 10% of your referrals' earnings</p>
+                    
+                    <div class="input-group">
+                        <label>Your Referral Code</label>
+                        <div class="copy-input">
+                            <input type="text" id="referral-code" readonly>
+                            <button id="copy-code">Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-value" id="ref-count">0</span>
+                            <span class="stat-label">Referrals</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value" id="ref-earnings">0.00</span>
+                            <span class="stat-label">USDT Earned</span>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <!-- প্রোফাইল পেজ -->
+            <div class="page" id="profile-page">
+                <div class="profile-card">
+                    <img id="profile-avatar" src="assets/images/default-avatar.png" alt="Profile" class="profile-avatar">
+                    <h3 id="profile-name">User Name</h3>
+                    <p class="user-meta" id="profile-username">@username</p>
+                    <p class="user-meta" id="profile-id">ID: 123456</p>
+                </div>
+
                 <div class="profile-stats">
                     <div class="stat-item">
-                        <span class="stat-label">Joined</span>
-                        <span class="stat-value">14 Aug 2024</span>
+                        <span class="stat-label">Joined Date</span>
+                        <span class="stat-value" id="join-date">2024-08-14</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Language</span>
-                        <span class="stat-value">English</span>
+                        <span class="stat-value" id="user-language">English</span>
                     </div>
                 </div>
             </div>
@@ -112,19 +134,19 @@
 
         <!-- বটম নেভিগেশন -->
         <nav class="bottom-nav">
-            <button class="nav-btn active" data-view="home-view">
+            <button class="nav-btn active" data-page="home-page">
                 <span class="nav-icon">🏠</span>
                 <span class="nav-text">Home</span>
             </button>
-            <button class="nav-btn" data-view="withdraw-view">
+            <button class="nav-btn" data-page="withdraw-page">
                 <span class="nav-icon">💳</span>
                 <span class="nav-text">Withdraw</span>
             </button>
-            <button class="nav-btn" data-view="referrals-view">
+            <button class="nav-btn" data-page="referral-page">
                 <span class="nav-icon">👥</span>
                 <span class="nav-text">Referrals</span>
             </button>
-            <button class="nav-btn" data-view="profile-view">
+            <button class="nav-btn" data-page="profile-page">
                 <span class="nav-icon">👤</span>
                 <span class="nav-text">Profile</span>
             </button>
