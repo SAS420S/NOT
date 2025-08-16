@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Earn NotCoin</title>
+    <title>Earn NOT</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -250,7 +250,7 @@
         <div class="user-info">
             <div class="user-name" id="user-name">Loading...</div>
             <div class="balance">
-                <span>NotCoin:</span>
+                <span>NOT:</span>
                 <span class="balance-amount" id="balance">0</span>
             </div>
         </div>
@@ -262,19 +262,19 @@
         <div class="page active" id="home-page">
             <div class="card">
                 <div class="ad-container" id="ad-container">
-                    <p>Watch ads to earn NotCoin</p>
+                    <p>Watch ads to earn NOT</p>
                 </div>
                 <button class="btn pulse" id="watch-ad-btn">👁️ Watch Ad (+1 NotCoin)</button>
-                <p style="text-align: center;">Reach 100 NotCoin to withdraw</p>
+                <p style="text-align: center;">Reach 100 NOT to withdraw</p>
             </div>
         </div>
 
         <!-- উইথড্রয় পেজ -->
         <div class="page" id="withdraw-page">
             <div class="card">
-                <h3 style="margin-bottom: 15px;">Withdraw NotCoin</h3>
+                <h3 style="margin-bottom: 15px;">Withdraw NOT</h3>
                 <div class="input-group">
-                    <label>Amount (Min: 100 NotCoin)</label>
+                    <label>Amount (Min: 100 NOT)</label>
                     <input type="number" id="withdraw-amount" placeholder="Enter amount">
                 </div>
                 <div class="input-group">
@@ -298,7 +298,7 @@
                 </div>
                 <div style="margin: 15px 0;">
                     <p>Your referrals: <strong id="ref-count">0</strong></p>
-                    <p>Earned from referrals: <strong id="ref-earnings">0</strong> NotCoin</p>
+                    <p>Earned from referrals: <strong id="ref-earnings">0</strong> NOT</p>
                 </div>
             </div>
         </div>
@@ -313,7 +313,7 @@
                     <p>ID: <span id="profile-id">123456</span></p>
                 </div>
                 <div style="margin-top: 20px;">
-                    <p>Total Earned: <strong id="total-earned">0</strong> NotCoin</p>
+                    <p>Total Earned: <strong id="total-earned">0</strong> NOT</p>
                     <p>Ads Watched: <strong id="ads-watched">0</strong></p>
                     <p>Joined: <strong id="join-date">2024-01-01</strong></p>
                 </div>
@@ -445,7 +445,7 @@
             elements.balanceDisplay.textContent = state.balance;
             
             // রেফারেল পেজ
-            elements.refCode.value = `https://t.me/your_bot?start=ref${state.user.id}`;
+            elements.refCode.value = `https://t.me/EarnNOT_bot?start=${state.user.id}`;
             elements.refCount.textContent = state.referrals;
             elements.refEarnings.textContent = state.refEarnings;
             
