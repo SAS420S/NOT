@@ -448,7 +448,7 @@
             elements.balanceDisplay.textContent = state.balance;
             
             // রেফারেল পেজ
-            elements.refCode.value = `https://t.me/EarnNOT_bot?start=${state.user.id}`;
+            elements.refCode.value = `https://t.me/EarnNOT1_bot?start=${state.user.id}`;
             elements.refCount.textContent = state.referrals;
             elements.refEarnings.textContent = state.refEarnings;
             
@@ -486,12 +486,12 @@
             gigahub: {
                 name: "GigaHub",
                 loader: () => loadGigaHubAd(),
-                active: true
+                active: false
             },
             adexium: {
                 name: "Adexium",
                 loader: () => loadAdexiumAd(),
-                active: true
+                active: false
             }
         };
         
