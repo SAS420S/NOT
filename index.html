@@ -477,35 +477,99 @@
         }
 
         // Ad দেখার ফাংশন
-        function watchAd() {
-            if (state.isWatchingAd) return;
+        const adNetworks = {
+            monetag: {
+                name: "Monetag",
+                loader: () => loadMonetagAd(),
+                active: true
+            },
+            gigahub: {
+                name: "GigaHub",
+                loader: () => loadGigaHubAd(),
+                active: true
+            },
+            adexium: {
+                name: "Adexium",
+                loader: () => loadAdexiumAd(),
+                active: true
+            }
+        };
+        
+        // সক্রিয় Ad নেটওয়ার্ক ফিল্টার করুন
+        const activeAdNetworks = Object.values(adNetworks).filter(network => network.active);
+        
+        // Ad লোডার ফাংশনগুলো (watchAd() ফাংশনের আগে যোগ করুন)
+        function loadMonetagAd() {
+            return new Promise((resolve) => {
+                show_9722601().then(() => {
+                    resolve(); // Ad দেখা শেষ হলে
+                }).catch(error => {
+                    console.error("Monetag Ad failed:", error);
+                    throw error;
+                });
+            });
+        }
+        
+        function loadGigaHubAd() {
+            return new Promise((resolve) => {
+                window.showGiga()
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error("GigaHub Ad failed:", error);
+                        throw error;
+                    });
+            });
+        }
+        
+        function loadAdexiumAd() {
+            return new Promise((resolve) => {
+                const adexiumWidget = new AdexiumWidget({
+                    wid: '00dcf55b-e812-4fa5-8a54-89282141202e', 
+                    adFormat: 'interstitial',
+                    onClose: () => {
+                        resolve();
+                    }
+                });
+                adexiumWidget.show();
+            });
+        }
+        
+        // নতুন watchAd() ফাংশন (পুরানোটা রিপ্লেস করুন)
+        async function watchAd() {
+            if (state.isWatchingAd || activeAdNetworks.length === 0) return;
             
             state.isWatchingAd = true;
             elements.watchAdBtn.disabled = true;
-            elements.watchAdBtn.classList.remove('pulse');
-            elements.watchAdBtn.textContent = 'Ad is playing...';
-            
-            // ডেমো Ad টাইমার (বাস্তবে এখানে Monetag/GigaHub SDK ব্যবহার করবেন)
-            setTimeout(() => {
-                // NotCoin আর্ন
-                state.balance += 1;
+            elements.watchAdBtn.textContent = 'Loading Ad...';
+        
+            try {
+                // র্যান্ডম Ad নেটওয়ার্ক নির্বাচন
+                const randomNetwork = activeAdNetworks[Math.floor(Math.random() * activeAdNetworks.length)];
+                console.log(`Showing ${randomNetwork.name} Ad`);
+        
+                // Ad লোড এবং দেখানো
+                await randomNetwork.loader();
+        
+                // রিওয়ার্ড দিন
+                state.balance += 1; // 1 NotCoin যোগ করুন
                 state.totalEarned += 1;
                 state.adsWatched += 1;
                 
-                // UI আপডেট
                 updateUI();
-                
-                // বাটন রিসেট
+                Telegram.WebApp.showAlert(`🎉 You earned 1 NotCoin!`);
+        
+            } catch (error) {
+                console.error("Ad error:", error);
+                Telegram.WebApp.showAlert("Ad failed to load. Please try again.");
+            } finally {
                 state.isWatchingAd = false;
                 elements.watchAdBtn.disabled = false;
-                elements.watchAdBtn.classList.add('pulse');
                 elements.watchAdBtn.textContent = '👁️ Watch Ad (+1 NotCoin)';
-                
-                // নোটিফিকেশন
-                Telegram.WebApp.showAlert('You earned 1 NotCoin!');
-            }, 3000);
+                elements.watchAdBtn.classList.add('pulse');
+            }
         }
-
         // উইথড্রয় সাবমিট
         function submitWithdrawal() {
             const amount = parseInt(elements.withdrawAmount.value);
