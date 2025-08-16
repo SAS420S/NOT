@@ -426,7 +426,7 @@
 
         // লোকাল স্টোরেজ থেকে ডাটা লোড
         function loadLocalData() {
-            const savedData = localStorage.getItem('earnNotCoinData');
+            const savedData = localStorage.getItem(`earnNotCoinData_${state.user.id}`);
             if (savedData) {
                 Object.assign(state, JSON.parse(savedData));
             }
@@ -434,7 +434,7 @@
 
         // ডাটা সেভ
         function saveData() {
-            localStorage.setItem('earnNotCoinData', JSON.stringify(state));
+            localStorage.setItem(`earnNotCoinData_${state.user.id}`, JSON.stringify(state));
         }
 
         // UI আপডেট
