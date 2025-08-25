@@ -495,100 +495,141 @@
             saveData();
         }
 
-        // Ad দেখার ফাংশন
-        const adNetworks = {
-            monetag: {
-                name: "Monetag",
-                loader: () => loadMonetagAd(),
-                active: true
-            },
-            gigahub: {
-                name: "GigaHub",
-                loader: () => loadGigaHubAd(),
-                active: true
-            },
-            adexium: {
-                name: "Adexium",
-                loader: () => loadAdexiumAd(),
-                active: true
-            }
+        const adState = {
+            isInitialized: false,
+            isShowingAd: false
         };
         
-        // সক্রিয় Ad নেটওয়ার্ক ফিল্টার করুন
-        const activeAdNetworks = Object.values(adNetworks).filter(network => network.active);
+        // Ad নেটওয়ার্ক ইনিশিয়ালাইজেশন
+        function initializeAdNetworks() {
+            if (adState.isInitialized) return;
+            
+            // Monetag ইনিশিয়ালাইজ
+            if (typeof show_9722601 === 'undefined') {
+                const monetagScript = document.createElement('script');
+                monetagScript.src = '//libtl.com/sdk.js?zone=9722601';
+                monetagScript.onload = () => {
+                    console.log('Monetag SDK loaded');
+                };
+                document.head.appendChild(monetagScript);
+            }
         
-        // Ad লোডার ফাংশনগুলো (watchAd() ফাংশনের আগে যোগ করুন)
-        function loadMonetagAd() {
-            return new Promise((resolve) => {
-                show_9722601().then(() => {
-                    resolve(); // Ad দেখা শেষ হলে
-                }).catch(error => {
-                    console.error("Monetag Ad failed:", error);
-                    throw error;
-                });
+            // GigaHub ইনিশিয়ালাইজ
+            if (typeof window.showGiga === 'undefined') {
+                const gigahubScript = document.createElement('script');
+                gigahubScript.src = 'https://ad.gigapub.tech/script?id=1770';
+                gigahubScript.onload = () => {
+                    console.log('GigaHub SDK loaded');
+                };
+                document.head.appendChild(gigahubScript);
+            }
+        
+            // Adexium ইনিশিয়ালাইজ
+            if (typeof AdexiumWidget === 'undefined') {
+                const adexiumScript = document.createElement('script');
+                adexiumScript.src = 'https://cdn.tgads.space/assets/js/adexium-widget.min.js';
+                adexiumScript.onload = () => {
+                    console.log('Adexium SDK loaded');
+                };
+                document.head.appendChild(adexiumScript);
+            }
+        
+            adState.isInitialized = true;
+        }
+                // Ad নেটওয়ার্ক ফাংশনগুলো
+        function showMonetagAd() {
+            return new Promise((resolve, reject) => {
+                if (typeof show_9722601 === 'function') {
+                    show_9722601().then(resolve).catch(reject);
+                } else {
+                    reject('Monetag SDK not loaded');
+                }
             });
         }
         
-        function loadGigaHubAd() {
-            return new Promise((resolve) => {
-                window.showGiga()
-                    .then(() => {
-                        resolve();
-                    })
-                    .catch(error => {
-                        console.error("GigaHub Ad failed:", error);
-                        throw error;
+        function showGigaHubAd() {
+            return new Promise((resolve, reject) => {
+                if (typeof window.showGiga === 'function') {
+                    window.showGiga().then(resolve).catch(reject);
+                } else {
+                    reject('GigaHub SDK not loaded');
+                }
+            });
+        }
+        
+        function showAdexiumAd() {
+            return new Promise((resolve, reject) => {
+                if (typeof AdexiumWidget === 'function') {
+                    const adexiumWidget = new AdexiumWidget({
+                        wid: '00dcf55b-e812-4fa5-8a54-89282141202e',
+                        adFormat: 'interstitial',
+                        onClose: resolve
                     });
-            });
-        }
-        
-        function loadAdexiumAd() {
-            return new Promise((resolve) => {
-                const adexiumWidget = new AdexiumWidget({
-                    wid: '00dcf55b-e812-4fa5-8a54-89282141202e', 
-                    adFormat: 'interstitial',
-                    onClose: () => {
-                        resolve();
-                    }
-                });
-                adexiumWidget.show();
+                    adexiumWidget.show();
+                } else {
+                    reject('Adexium SDK not loaded');
+                }
             });
         }
         
         // নতুন watchAd() ফাংশন (পুরানোটা রিপ্লেস করুন)
         async function watchAd() {
-            if (state.isWatchingAd || activeAdNetworks.length === 0) return;
-            
-            state.isWatchingAd = true;
+            // চেক করুন Ad ইতিমধ্যে চলছে কিনা
+            if (adState.isShowingAd) {
+                console.log('Ad is already being shown');
+                return;
+            }
+        
+            // UI আপডেট
+            adState.isShowingAd = true;
             elements.watchAdBtn.disabled = true;
             elements.watchAdBtn.textContent = 'Loading Ad...';
+            elements.watchAdBtn.classList.remove('pulse');
+            elements.adContainer.innerHTML = '<div class="loading-animation">Loading ad...</div>';
         
             try {
+                // Ad নেটওয়ার্ক ইনিশিয়ালাইজেশন নিশ্চিত করুন
+                initializeAdNetworks();
+
                 // র্যান্ডম Ad নেটওয়ার্ক নির্বাচন
-                const randomNetwork = activeAdNetworks[Math.floor(Math.random() * activeAdNetworks.length)];
-                console.log(`Showing ${randomNetwork.name} Ad`);
+                const networks = ['monetag', 'gigahub', 'adexium'];
+                const randomNetwork = networks[Math.floor(Math.random() * networks.length)];
+                console.log('Selected network:', randomNetwork);
         
-                // Ad লোড এবং দেখানো
-                await randomNetwork.loader();
+                // Ad দেখান
+                switch(randomNetwork) {
+                    case 'monetag':
+                        await showMonetagAd();
+                        break;
+                    case 'gigahub':
+                        await showGigaHubAd();
+                        break;
+                    case 'adexium':
+                        await showAdexiumAd();
+                        break;
+                }
         
                 // রিওয়ার্ড দিন
-                state.balance += 1; // 1 NotCoin যোগ করুন
+                state.balance += 1;
                 state.totalEarned += 1;
                 state.adsWatched += 1;
-                
                 updateUI();
-                Telegram.WebApp.showAlert(`🎉 You earned 1 NotCoin!`);
+                
+                Telegram.WebApp.showAlert('You earned 1 NotCoin!');
         
             } catch (error) {
-                console.error("Ad error:", error);
-                Telegram.WebApp.showAlert("Ad failed to load. Please try again.");
+                console.error('Ad error:', error);
+                elements.adContainer.innerHTML = '<p>Failed to load ad. Please try again.</p>';
+                Telegram.WebApp.showAlert('Ad loading failed. Please try again.');
             } finally {
-                state.isWatchingAd = false;
+                // UI রিসেট
+                adState.isShowingAd = false;
                 elements.watchAdBtn.disabled = false;
                 elements.watchAdBtn.textContent = '👁️ Watch Ad (+1 NotCoin)';
                 elements.watchAdBtn.classList.add('pulse');
             }
         }
+        initializeAdNetworks();
         // উইথড্রয় সাবমিট
         function submitWithdrawal() {
             const amount = parseInt(elements.withdrawAmount.value);
